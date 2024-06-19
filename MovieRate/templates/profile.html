@@ -17,6 +17,82 @@
 	  <pre>{{ request.session['userinfo'] | to_pretty_json }}</pre>
 	</div>
       </div>
+  <div>
+      <h2>Filmes:</h2>
+      <ul>
+        {% for film in films %}
+          <li>
+            <strong>{{ film.name }}</strong><br>
+            {{ film.synopsis }}<br>
+            Rate: {{ film.rate }}
+            <form id="deleteFilmForm_{{ film.id }}" class="delete-form">
+              <input type="hidden" name="film_id" value="{{ film.id }}">
+              <button type="submit">Remove</button>
+            </form>
+          </li>
+        {% endfor %}
+      </ul>
+
+      <form id="filmForm">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required><br><br>
+        
+        <label for="synopsis">Synopsis:</label>
+        <textarea id="synopsis" name="synopsis" required></textarea><br><br>
+        
+        <label for="rate">Rate:</label>
+        <input type="number" id="rate" name="rate" required><br><br>
+        
+        <button type="submit">Submit</button>
+    </form>
+  </div>
+
     </div>
+
+    <script>
+      document.querySelectorAll('.delete-form').forEach(form => {
+        form.addEventListener('submit', async function(event) {
+            event.preventDefault();
+
+            const formData = new FormData(form);
+            const filmId = formData.get('film_id');
+
+            const response = await fetch(`/films/${filmId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (response.ok) {
+                alert('Film removed successfully!');
+                location.reload();
+            } else {
+                alert('Error removing film');
+            }
+        });
+    });
+    
+    document.getElementById('filmForm').addEventListener('submit', async function(event) {
+      event.preventDefault();
+
+      const formData = new FormData(event.target);
+      const formObject = Object.fromEntries(formData.entries());
+
+      const response = await fetch('/films', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(formObject)
+      });
+
+      if (response.ok) {
+          alert('Film submitted successfully!');
+      } else {
+          alert('Error submitting film');
+      }
+  });
+  </script>
   </body>
 </html>
