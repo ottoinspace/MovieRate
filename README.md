@@ -15,7 +15,7 @@ MovieRate é uma aplicação web desenvolvida com FastAPI que permite aos usuár
 
    ```bash
    git clone https://github.com/seu-usuario/movierate.git
-   cd movierate
+   cd MovieRate
 
 2. **Instale as dependências com Poetry:**
    
